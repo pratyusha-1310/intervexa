@@ -89,3 +89,13 @@ Feedback Generator
 
 Current backend provides only the application foundation.
 No interview logic has been implemented yet.
+
+### Candidate & Curriculum Loading
+
+- Official `candidates.json` integrated.
+- Official `curriculum.json` integrated.
+- Added dedicated loader package (`app/loaders`).
+- Implemented JSON validation and custom exceptions.
+- Added unit tests for loader functionality.
+
+Current interview logic has **not** been implemented yet.

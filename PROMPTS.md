@@ -81,3 +81,94 @@ Do not add:
 ### Changes After Generation
 - None
 
+## Prompt 02 – Candidate & Curriculum Loaders
+
+### Goal
+Generate robust data loaders for the official hackathon JSON files.
+
+### Tool
+Antigravity
+
+### Prompt
+You are continuing the backend development of INTERVEXA.
+
+Current milestone:
+B2 — Candidate & Curriculum Loading
+
+IMPORTANT:
+Do NOT implement interview logic.
+Do NOT implement AI.
+Do NOT generate interview questions.
+Do NOT generate conversation memory.
+Do NOT generate planning logic.
+
+Generate ONLY data loading utilities.
+
+Project structure already exists.
+
+Create:
+
+app/loaders/
+    __init__.py
+    candidate_loader.py
+    curriculum_loader.py
+
+Requirements
+
+1. candidate_loader.py
+
+- Load backend/data/candidates.json
+- Parse the JSON safely
+- Validate the file exists
+- Raise meaningful exceptions for:
+    - missing file
+    - invalid JSON
+    - missing "candidates" key
+- Return the candidate collection.
+
+Expose:
+
+load_candidates()
+
+get_candidate(candidate_id)
+
+2. curriculum_loader.py
+
+- Load backend/data/curriculum.json
+- Validate file existence
+- Validate JSON
+- Return curriculum data
+
+Expose:
+
+load_curriculum()
+
+3. Keep paths configurable using pathlib.
+
+4. Use type hints.
+
+5. Keep the implementation simple and production-friendly.
+
+6. Do NOT hardcode candidate data.
+
+7. Do NOT modify the supplied JSON files.
+
+8. Add concise docstrings.
+
+9. Add basic unit tests for:
+   - successful loading
+   - missing file
+   - invalid JSON
+
+Return only the files required for this milestone.
+
+### Result
+- Created `app/loaders/`
+- Added `candidate_loader.py`
+- Added `curriculum_loader.py`
+- Added JSON validation
+- Added custom exception hierarchy
+- Added unit tests
+
+### Decision
+Separated data loading from business logic by introducing a dedicated `loaders` package.
