@@ -456,3 +456,72 @@ Implemented:
 The Session Registry is the single source of truth for active interview sessions.
 
 Future persistence layers (Redis/database) can replace the in-memory implementation without affecting the API or business logic.
+
+## Prompt 008 – Official Interview API
+
+### Goal
+
+Implement the official hackathon API endpoint for INTERVEXA.
+
+The endpoint must follow the provided Technical Specification exactly:
+
+`POST /api/interview`
+
+It must support both interview initialization and interview continuation while reusing the existing backend architecture.
+
+The API layer should remain lightweight, delegating orchestration to a dedicated controller rather than containing business logic.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated the official Interview API by connecting the existing backend components through an Interview Controller.
+
+The implementation reuses:
+
+- Candidate Loader
+- Curriculum Loader
+- Interview Planner
+- Interview Session Manager
+- Interview Decision Engine
+- AI Interview Agent
+- Session Registry
+
+The controller orchestrates interview initialization and continuation while the FastAPI router remains a thin transport layer.
+
+### Result
+
+Generated:
+
+- `app/schemas/interview_api.py`
+- `app/services/interview_controller.py`
+- `app/routers/interview.py`
+
+Updated:
+
+- `app/main.py`
+
+Implemented:
+
+- Official `POST /api/interview` endpoint
+- Request validation for Start Interview and Continue Interview modes
+- InterviewController orchestration layer
+- Session Registry integration
+- Interview Session lifecycle management
+- AI Interview Agent integration
+- Decision Engine integration
+- Structured API responses
+- HTTP exception mapping (400, 404, 409, 500)
+- Comprehensive API and integration tests
+
+### Decision
+
+The API layer is intentionally thin.
+
+Business logic remains encapsulated inside the Interview Controller and existing backend services.
+
+The endpoint conforms to the official hackathon Technical Specification while keeping interview planning, session management, decision making, AI interaction, and session storage as independent components.
+
+Final interview feedback is intentionally deferred to the Feedback Engine milestone and currently returns `null` when the interview completes.

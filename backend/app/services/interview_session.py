@@ -87,14 +87,14 @@ class InterviewSession:
               as produced by ``build_interview_plan()``.
     """
 
-    def __init__(self, plan: InterviewPlan) -> None:
-        session_id = str(uuid4())
+    def __init__(self, plan: InterviewPlan, session_id: Optional[str] = None) -> None:
+        actual_session_id = session_id or str(uuid4())
 
         # Stamp the session_id onto the plan for traceability.
-        plan = plan.model_copy(update={"session_id": session_id})
+        plan = plan.model_copy(update={"session_id": actual_session_id})
 
         self._state = InterviewSessionState(
-            session_id=session_id,
+            session_id=actual_session_id,
             candidate_id=plan.candidate_id,
             plan=plan,
         )

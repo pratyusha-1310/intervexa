@@ -328,3 +328,154 @@ The Session Registry maintains active InterviewSession instances in memory.
 It is intentionally lightweight and independent of FastAPI.
 
 Future persistence mechanisms can replace the in-memory implementation without changing the backend architecture.
+
+## ✅ B5B – Official Interview API
+
+### Status
+
+**Completed**
+
+### Objective
+
+Implemented the official hackathon API endpoint following the provided Technical Specification.
+
+The backend now supports both:
+
+- Interview initialization
+- Interview continuation
+
+through a single endpoint:
+
+`POST /api/interview`
+
+### New Components
+
+- API request/response schemas
+- Interview Controller
+- Interview Router
+- FastAPI route integration
+
+### Implemented Features
+
+- Official `POST /api/interview` endpoint
+- Request validation
+- Interview initialization flow
+- Interview continuation flow
+- Session Registry integration
+- Interview Planner integration
+- Interview Session integration
+- Decision Engine integration
+- AI Interview Agent integration
+- Structured API responses
+- HTTP exception handling
+- Comprehensive integration tests
+
+### Request Modes
+
+#### Start Interview
+
+```json
+{
+  "sessionId": "...",
+  "candidate": { ... }
+}
+```
+
+Flow:
+
+- Load candidate
+- Load curriculum
+- Build InterviewPlan
+- Create InterviewSession
+- Register session
+- Generate opening interviewer message
+- Return API response
+
+#### Continue Interview
+
+```json
+{
+  "sessionId": "...",
+  "message": "..."
+}
+```
+
+Flow:
+
+- Retrieve InterviewSession
+- Store candidate response
+- Invoke Decision Engine
+- Generate next interviewer response
+- Update session
+- Return API response
+
+### Response Format
+
+During interview:
+
+```json
+{
+  "reply": "...",
+  "done": false
+}
+```
+
+Interview completion:
+
+```json
+{
+  "reply": "...",
+  "done": true,
+  "feedback": null
+}
+```
+
+The Feedback Engine has not yet been integrated.
+
+### Current Backend Architecture
+
+```
+Official JSON
+        │
+        ▼
+Candidate & Curriculum Loaders
+        │
+        ▼
+Interview Planner
+        │
+        ▼
+Interview Session Manager
+        │
+        ▼
+Interview Decision Engine
+        │
+        ▼
+AI Interview Agent
+        │
+        ▼
+Session Registry
+        │
+        ▼
+Interview Controller
+        │
+        ▼
+POST /api/interview
+```
+
+### Test Status
+
+- 142 / 142 tests passing
+
+### Current State
+
+Backend API is now fully functional and ready for frontend integration.
+
+The frontend can replace the mock InterviewService and begin consuming the official backend endpoint.
+
+### Remaining Milestones
+
+- B6A – Breeth LLM Provider
+- B6B – Feedback Engine
+- End-to-End Frontend Integration
+- Production Deployment
+- Final Testing & Submission

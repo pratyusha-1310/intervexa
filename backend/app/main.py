@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config.settings import get_settings
-from app.routers import core
+from app.routers import core, interview
 
 settings = get_settings()
 
@@ -59,8 +59,7 @@ def create_app() -> FastAPI:
 
     # ── Routers ────────────────────────────────────────────────────────────────
     app.include_router(core.router)
-    # Future routers can be mounted here, e.g.:
-    # app.include_router(interview.router, prefix="/interview")
+    app.include_router(interview.router)
 
     return app
 
