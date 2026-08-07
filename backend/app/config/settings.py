@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     # ── CORS ───────────────────────────────────────────────────────────────────
     ALLOWED_ORIGINS: list[str] = ["*"]
 
+    # ── LLM Settings ───────────────────────────────────────────────────────────
+    LLM_API_KEY: str = ""
+    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_PROVIDER: str = "mock"  # mock | openai | custom
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

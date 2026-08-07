@@ -276,3 +276,36 @@ Capabilities:
 
 No AI behaviour yet.
 
+### ✅ B4C – AI Interview Agent
+
+Implemented:
+
+- AI Interview Agent
+- Centralized interviewer system prompt
+- Provider abstraction
+- Mock LLM provider
+- OpenAI provider
+- Structured AgentResponse model
+- Prompt construction
+- Unit tests
+
+The Interview Agent consumes:
+
+- InterviewPlan
+- InterviewSession
+- InterviewDecision
+
+The Interview Agent is responsible only for generating interviewer responses.
+
+Business logic remains in the Planner, Session Manager, and Decision Engine.
+
+Current supported providers:
+
+- MockLLMProvider
+- OpenAILLMProvider
+
+Future providers (planned):
+
+- Breeth Provider
+
+The Interview Agent returns structured responses suitable for the API layer.

@@ -321,3 +321,74 @@ It manages interview state only.
 It does not contain AI behaviour, business decisions, or interview generation logic.
 
 Future components including the Decision Engine, LLM Question Generator, and Feedback Engine will consume the Interview Session Manager rather than modifying interview state directly.
+
+## Prompt 006 – AI Interview Agent
+
+### Goal
+
+Generate the AI Interview Agent for INTERVEXA.
+
+The AI Interview Agent is the only backend component responsible for communicating with the configured Large Language Model (LLM).
+
+It must:
+
+- Consume the InterviewPlan, InterviewSession, and InterviewDecision.
+- Generate exactly one interviewer response at a time.
+- Generate opening questions, follow-up questions, topic transitions, and interview completion messages.
+- Return structured responses suitable for the API layer.
+- Use a provider abstraction so the underlying LLM can be replaced without changing business logic.
+
+The AI Interview Agent must NOT:
+
+- Generate final interview feedback.
+- Modify interview state.
+- Expose API endpoints.
+- Implement session management.
+- Contain interview planning logic.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated an AI Interview Agent with a centralized system prompt, provider abstraction, and structured response model.
+
+Implemented:
+
+- BaseLLMProvider abstraction
+- MockLLMProvider for deterministic testing
+- OpenAILLMProvider
+- AgentResponse schema
+- Prompt builder
+- Structured response generation
+
+Configuration is read from environment variables to support different LLM providers.
+
+### Result
+
+Generated:
+
+- `app/services/interview_agent.py`
+- `app/schemas/interview_agent.py`
+- Configuration updates
+- Comprehensive unit tests
+
+Implemented:
+
+- Provider abstraction
+- Centralized interviewer system prompt
+- Structured response model
+- Opening question generation
+- Follow-up generation
+- Topic transition generation
+- Interview completion message generation
+- Mock provider for offline testing
+
+### Decision
+
+The AI Interview Agent is the only backend component allowed to communicate with an LLM.
+
+All future AI interactions will pass through this service.
+
+Business logic remains separated into the Planner, Session Manager, and Decision Engine.
