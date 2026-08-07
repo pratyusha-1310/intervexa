@@ -172,3 +172,73 @@ Return only the files required for this milestone.
 
 ### Decision
 Separated data loading from business logic by introducing a dedicated `loaders` package.
+
+## Prompt 003 – Adaptive Interview Planner
+
+### Goal
+
+Generate the Interview Planner for INTERVEXA.
+
+The planner should analyze the official candidate profile and curriculum data to create an internal interview strategy before the interview begins.
+
+The planner must:
+
+- Select at least 4 curriculum days.
+- Plan for a minimum of 8 interview questions.
+- Prioritize skipped missions and higher-attempt missions.
+- Determine an initial interview difficulty based on the candidate profile.
+- Generate evaluation goals and interview strategy.
+- Preserve curriculum metadata for later use by the Interview Engine.
+
+The planner must NOT:
+
+- Generate interview questions.
+- Call any LLM.
+- Generate feedback.
+- Implement API routes.
+- Maintain conversation state.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated an Interview Planner using the official `curriculum.json` and `candidates.json` schema.
+
+The planner creates an internal `InterviewPlan` object containing:
+
+- Selected curriculum days
+- Selected modules
+- Question allocation
+- Initial difficulty
+- Evaluation goals
+- Interview strategy
+- Selection reasons
+
+The planner preserves curriculum metadata (day, module, tools, objectives, type) for later consumption by the Interview Engine.
+
+### Result
+
+Generated:
+
+- `app/services/interview_planner.py`
+- `app/schemas/interview_plan.py`
+- Comprehensive unit tests
+
+Implemented:
+
+- Deterministic planning
+- Priority-based curriculum selection
+- Difficulty estimation
+- Question budgeting
+- Curriculum metadata preservation
+- Interview strategy generation
+
+### Decision
+
+The Interview Planner is an internal backend component.
+
+It is not exposed to the frontend.
+
+It will later be consumed by the Interview Engine during interview initialization through the official `POST /api/interview` workflow.
