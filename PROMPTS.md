@@ -392,3 +392,67 @@ The AI Interview Agent is the only backend component allowed to communicate with
 All future AI interactions will pass through this service.
 
 Business logic remains separated into the Planner, Session Manager, and Decision Engine.
+
+## Prompt 007 – In-Memory Session Registry
+
+### Goal
+
+Generate an in-memory Session Registry for INTERVEXA.
+
+The Session Registry is responsible for storing and managing active interview sessions.
+
+It must:
+
+- Create new sessions.
+- Retrieve sessions by session ID.
+- Check session existence.
+- Remove completed sessions.
+- Clear active sessions.
+- Provide lightweight inspection for debugging.
+
+The Session Registry must NOT:
+
+- Implement API routes.
+- Generate interview questions.
+- Call an LLM.
+- Implement interview logic.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated an in-memory Session Registry using a lightweight singleton service.
+
+Implemented:
+
+- Session storage
+- O(1) session lookup
+- Duplicate session protection
+- Session lifecycle management
+- Singleton accessor
+
+### Result
+
+Generated:
+
+- `app/services/session_registry.py`
+- Comprehensive unit tests
+
+Implemented:
+
+- Session creation
+- Session retrieval
+- Session removal
+- Session existence checks
+- Active session count
+- Session listing
+- Registry clearing
+- Custom exception hierarchy
+
+### Decision
+
+The Session Registry is the single source of truth for active interview sessions.
+
+Future persistence layers (Redis/database) can replace the in-memory implementation without affecting the API or business logic.

@@ -309,3 +309,22 @@ Future providers (planned):
 - Breeth Provider
 
 The Interview Agent returns structured responses suitable for the API layer.
+
+### ✅ B5A – In-Memory Session Registry
+
+Implemented:
+
+- Session Registry
+- Singleton registry accessor
+- Session lifecycle management
+- Duplicate session protection
+- Session lookup
+- Session removal
+- Registry inspection utilities
+- Unit tests
+
+The Session Registry maintains active InterviewSession instances in memory.
+
+It is intentionally lightweight and independent of FastAPI.
+
+Future persistence mechanisms can replace the in-memory implementation without changing the backend architecture.
