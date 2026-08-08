@@ -15,8 +15,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
+from app.config.settings import get_settings
 from app.loaders.candidate_loader import CandidateNotFoundError, get_candidate
 from app.loaders.curriculum_loader import load_curriculum
+from app.schemas.candidate_profile import CandidateProfile
 from app.schemas.interview_api import InterviewApiRequest, InterviewApiResponse
 from app.schemas.interview_decision import DecisionAction
 from app.services.interview_agent import BaseLLMProvider, generate_agent_response
@@ -31,22 +33,47 @@ from app.services.session_registry import (
 )
 
 
-def extract_candidate_id(candidate_input: Any) -> str:
-    """Extracts a candidate ID string from string or dict candidate payloads."""
+def resolve_candidate(candidate_input: Any) -> Dict[str, Any]:
+    """
+    Validates and resolves the candidate data.
+    If a complete candidate profile is provided, it is validated and used directly.
+    Otherwise, extracts the ID and retrieves the profile from the candidates loader.
+    """
+    if candidate_input is None:
+        raise ValueError("Missing 'candidate' field in start request.")
+
+    # 1. If it's a full candidate profile dictionary, validate and return directly
+    if isinstance(candidate_input, dict) and "member" in candidate_input and "missions" in candidate_input and "signals" in candidate_input:
+        try:
+            profile = CandidateProfile.model_validate(candidate_input)
+            return profile.model_dump()
+        except Exception as exc:
+            raise ValueError(f"Malformed candidate profile: {exc}") from exc
+
+    # 2. Extract candidate ID for local lookup
+    candidate_id = ""
     if isinstance(candidate_input, str) and candidate_input.strip():
-        return candidate_input.strip()
-    if isinstance(candidate_input, dict):
+        candidate_id = candidate_input.strip()
+    elif isinstance(candidate_input, dict):
         if "id" in candidate_input and isinstance(candidate_input["id"], str):
-            return candidate_input["id"].strip()
-        if "member" in candidate_input and isinstance(candidate_input["member"], dict):
+            candidate_id = candidate_input["id"].strip()
+        elif "member" in candidate_input and isinstance(candidate_input["member"], dict):
             mem_id = candidate_input["member"].get("id")
             if isinstance(mem_id, str) and mem_id.strip():
-                return mem_id.strip()
-        if "candidate_id" in candidate_input and isinstance(candidate_input["candidate_id"], str):
-            return candidate_input["candidate_id"].strip()
-    raise ValueError(
-        "Invalid candidate format. Must be a valid candidate ID string or object containing 'id'."
-    )
+                candidate_id = mem_id.strip()
+            else:
+                raise ValueError("Supplied candidate object must have a valid member.id.")
+        elif "candidate_id" in candidate_input and isinstance(candidate_input["candidate_id"], str):
+            candidate_id = candidate_input["candidate_id"].strip()
+        else:
+            raise ValueError("Malformed candidate start payload: missing candidate fields.")
+    else:
+        raise ValueError("Candidate field must be a candidate object or ID string.")
+
+    if not candidate_id:
+        raise ValueError("Candidate ID cannot be empty.")
+
+    return get_candidate(candidate_id)
 
 
 def process_interview_request(
@@ -87,10 +114,8 @@ def _handle_start_interview(
     provider: Optional[BaseLLMProvider],
 ) -> Dict[str, Any]:
     """Handles Start Interview flow."""
-    candidate_id = extract_candidate_id(request.candidate)
-
-    # Load candidate and curriculum data
-    candidate_data = get_candidate(candidate_id)
+    # Resolve candidate profile from either the complete profile object or local lookup
+    candidate_data = resolve_candidate(request.candidate)
     curriculum_data = load_curriculum()
 
     # Generate InterviewPlan

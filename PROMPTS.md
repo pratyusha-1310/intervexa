@@ -634,3 +634,47 @@ Implemented:
 Feedback generation remains completely independent from the Interview Agent.
 
 The Interview Controller orchestrates feedback generation only after interview completion, preserving clean separation of responsibilities while satisfying the hackathon requirement for structured interview evaluation.
+
+## Prompt 011 – B5B Candidate Payload Integration Fix
+
+### Goal
+
+Fix the official POST /api/interview start flow so that the complete candidate object supplied by the frontend is used directly, as required by the official Technical Specification.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Fixed an integration issue where the backend extracted a candidate ID from the start request and attempted an exact lookup in backend/data/candidates.json.
+
+The official API contract supplies the complete candidate object in the request, so the supplied candidate profile must be the source of truth for that interview session.
+
+The fix:
+
+- validates the supplied candidate profile
+- uses it directly for interview planning
+- preserves the supplied candidate ID
+- removes the dependency on an exact local dataset match
+- preserves existing continue-interview behavior
+- adds integration tests for custom and existing candidate IDs
+
+### Result
+
+Added:
+
+- `app/schemas/candidate_profile.py`
+
+Updated:
+
+- `app/services/interview_controller.py`
+- `tests/test_interview_api.py`
+
+All 161 tests passed.
+
+### Decision
+
+The official API remains stateless with respect to candidate selection: the complete candidate profile supplied in the start request is authoritative for that interview.
+
+The local `candidates.json` remains available for development and testing but is not required for a candidate ID to be accepted by `POST /api/interview`.

@@ -174,3 +174,114 @@ class TestInterviewApiRouterIntegration:
         assert final_resp["feedback"] is not None
         assert "summary" in final_resp["feedback"]
         assert "overall_assessment" in final_resp["feedback"]
+
+
+class TestCandidatePayloadFix:
+    @pytest.fixture(autouse=True)
+    def _reset_registry(self) -> None:
+        get_session_registry().clear()
+
+    def test_start_with_existing_candidate_id(self) -> None:
+        payload = {
+            "sessionId": "existing-id-sess",
+            "candidate": "CAND-001"
+        }
+        res = client.post("/api/interview", json=payload)
+        assert res.status_code == 200
+        assert get_session_registry().session_exists("existing-id-sess") is True
+        session = get_session_registry().get_session("existing-id-sess")
+        assert session.candidate_id == "CAND-001"
+
+    def test_start_with_custom_candidate_profile_not_in_json(self) -> None:
+        custom_candidate = {
+            "member": {
+                "id": "cand-custom-01",
+                "name": "Custom Engineering Candidate",
+                "yearsExperience": 6
+            },
+            "missions": [
+                { "day": 7, "title": "Embeddings Explained", "passed": True, "attempts": 1 },
+                { "day": 8, "title": "Vector Databases Overview", "passed": True, "attempts": 1 },
+                { "day": 10, "title": "Retrieval & Matching Engine", "passed": True, "attempts": 2 },
+                { "day": 12, "title": "Prompt Engineering Fundamentals", "passed": True, "attempts": 1 },
+                { "day": 16, "title": "Chatbot Backend & API Integration", "passed": True, "attempts": 1 }
+            ],
+            "signals": {
+                "missionsCompleted": 5,
+                "missionsFirstTry": 4
+            }
+        }
+        payload = {
+            "sessionId": "custom-candidate-sess",
+            "candidate": custom_candidate
+        }
+        res = client.post("/api/interview", json=payload)
+        assert res.status_code == 200
+        
+        registry = get_session_registry()
+        assert registry.session_exists("custom-candidate-sess") is True
+        session = registry.get_session("custom-candidate-sess")
+        
+        # Verify supplied candidate ID is stored
+        assert session.candidate_id == "cand-custom-01"
+        
+        # Verify supplied name is used in the interview plan
+        assert session.plan.candidate_name == "Custom Engineering Candidate"
+        # Verify initial difficulty is derived from custom candidate experience (6 years -> Medium-High)
+        assert session.plan.initial_difficulty == "Medium-High"
+
+    def test_malformed_candidate_profile_payload_rejected(self) -> None:
+        # member is missing yearsExperience
+        bad_candidate = {
+            "member": {
+                "id": "cand-bad-01",
+                "name": "Broken Candidate"
+            },
+            "missions": [],
+            "signals": {
+                "missionsCompleted": 0,
+                "missionsFirstTry": 0
+            }
+        }
+        payload = {
+            "sessionId": "bad-cand-sess",
+            "candidate": bad_candidate
+        }
+        res = client.post("/api/interview", json=payload)
+        assert res.status_code == 400
+        assert "Malformed candidate profile" in res.json()["detail"]
+
+    def test_complete_start_continue_flow_with_custom_candidate(self) -> None:
+        custom_candidate = {
+            "member": {
+                "id": "cand-flow-99",
+                "name": "Flow Candidate",
+                "yearsExperience": 3
+            },
+            "missions": [
+                { "day": 7, "title": "Embeddings Explained", "passed": True, "attempts": 1 },
+                { "day": 8, "title": "Vector Databases Overview", "passed": True, "attempts": 1 },
+                { "day": 10, "title": "Retrieval & Matching Engine", "passed": True, "attempts": 2 },
+                { "day": 12, "title": "Prompt Engineering Fundamentals", "passed": True, "attempts": 1 },
+                { "day": 16, "title": "Chatbot Backend & API Integration", "passed": True, "attempts": 1 }
+            ],
+            "signals": {
+                "missionsCompleted": 5,
+                "missionsFirstTry": 4
+            }
+        }
+        sid = "flow-sess-custom"
+        
+        # Start
+        start_res = client.post("/api/interview", json={"sessionId": sid, "candidate": custom_candidate})
+        assert start_res.status_code == 200
+        
+        # Continue
+        cont_res = client.post("/api/interview", json={
+            "sessionId": sid,
+            "message": "Vector search matches similarity using distance metrics like cosine distance or dot product."
+        })
+        assert cont_res.status_code == 200
+        assert "reply" in cont_res.json()
+        assert cont_res.json()["done"] is False
+

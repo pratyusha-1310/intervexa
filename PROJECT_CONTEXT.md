@@ -599,3 +599,43 @@ All automated tests passing.
 Backend feature development is complete.
 
 Remaining work focuses on frontend integration, end-to-end validation, deployment, and final submission.
+
+## B5B Integration Fix – Candidate Payload Source of Truth
+
+### Status
+
+Completed
+
+### Issue
+
+Frontend integration exposed a mismatch between the frontend candidate dataset and the backend local `candidates.json`.
+
+The official API specification requires the frontend to send the complete candidate object when starting an interview.
+
+### Resolution
+
+The backend now:
+
+- validates the supplied candidate profile
+- uses the supplied candidate object directly
+- preserves the supplied candidate ID
+- does not require the ID to exist in `backend/data/candidates.json`
+
+The local candidate dataset remains useful for backend development and testing but is not a dependency of the official interview-start API.
+
+### Architecture
+
+```text
+Frontend Candidate
+        |
+        v
+POST /api/interview
+        |
+        v
+Candidate Profile Validation
+        |
+        v
+Interview Planner
+        |
+        v
+Interview Session
