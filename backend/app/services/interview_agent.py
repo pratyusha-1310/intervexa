@@ -342,6 +342,16 @@ def _build_llm_messages(
     return full_messages, day_num, day_title, is_follow_up
 
 
+def _generate_fallback_question(day_obj: SelectedDay) -> str:
+    """Generates a professional, objective-based question fallback to avoid duplication."""
+    objective = day_obj.objectives[0] if day_obj.objectives else "core concepts"
+    tools_str = f" using {', '.join(day_obj.tools)}" if day_obj.tools else ""
+    return (
+        f"Let's look at another area: {objective}{tools_str}. "
+        f"Can you explain your approach and the key architectural trade-offs you consider in practice?"
+    )
+
+
 # ── Service API ────────────────────────────────────────────────────────────────
 
 def generate_agent_response(
@@ -352,6 +362,8 @@ def generate_agent_response(
 ) -> AgentResponse:
     """
     Generates a structured AgentResponse using the configured LLM provider.
+
+    Includes duplicate question detection and objective-based question fallback.
 
     Args:
         plan: The active InterviewPlan.
@@ -367,6 +379,33 @@ def generate_agent_response(
     messages, day_num, day_title, is_follow_up = _build_llm_messages(plan, session, decision)
 
     reply_text = active_provider.generate(SYSTEM_PROMPT, messages)
+
+    # ── Duplicate Protection Safeguard ────────────────────────────────────────
+    # Gather previous interviewer replies to prevent repetition
+    recent_replies = [
+        entry.content.strip().lower()
+        for entry in session.get_conversation_history()
+        if entry.role == "interviewer"
+    ]
+
+    if reply_text.strip().lower() in recent_replies and not decision.interview_complete:
+        # Retry generation once with a stronger system directive
+        retry_messages = messages + [
+            {"role": "assistant", "content": reply_text},
+            {
+                "role": "user",
+                "content": (
+                    "CRITICAL: The question you just asked is an exact duplicate of a previous question. "
+                    "You must ask a completely new, different question about the topic. Do not repeat yourself."
+                )
+            }
+        ]
+        reply_text = active_provider.generate(SYSTEM_PROMPT, retry_messages)
+
+        # If it remains a duplicate, use the deterministic fallback question based on day objectives
+        if reply_text.strip().lower() in recent_replies:
+            day_obj = next((d for d in plan.selected_days if d.day == day_num), plan.selected_days[0])
+            reply_text = _generate_fallback_question(day_obj)
 
     return AgentResponse(
         reply=reply_text,

@@ -678,3 +678,42 @@ All 161 tests passed.
 The official API remains stateless with respect to candidate selection: the complete candidate profile supplied in the start request is authoritative for that interview.
 
 The local `candidates.json` remains available for development and testing but is not required for a candidate ID to be accepted by `POST /api/interview`.
+
+## Prompt 012 – Duplicate Question Prevention
+
+### Goal
+
+Fix a confirmed backend issue where the interview could repeatedly generate the same interviewer question, preventing genuine progression through the interview.
+
+### Problem
+
+Short or evasive candidate responses could repeatedly trigger `FOLLOW_UP` for the same question. Additionally, there was no safeguard against an LLM provider returning an identical interviewer response.
+
+### Implementation
+
+Updated the Interview Decision Engine to limit follow-ups to at most one per planned question.
+
+Updated the Interview Agent to:
+
+- detect exact duplicate interviewer replies
+- retry generation once with stronger instructions
+- use a deterministic curriculum-based fallback if duplication persists
+
+The fallback derives new questions from the active curriculum day's objectives and tools rather than hardcoding a specific question.
+
+### Tests
+
+Added regression coverage for:
+
+- follow-up limits
+- repeated LLM responses
+- duplicate prevention
+- progression to the next question
+
+### Verification
+
+163/163 tests passing.
+
+### Result
+
+The interview can no longer become indefinitely stuck repeating the same interviewer question.

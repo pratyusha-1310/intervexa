@@ -119,15 +119,28 @@ def make_decision(
 
     # Rule 3: Check candidate answer for follow-up necessity (only if an answer was submitted)
     if candidate_answer is not None and candidate_answer.strip():
-        is_incomplete, reason_desc = _is_short_or_incomplete_answer(candidate_answer)
-        if is_incomplete:
-            return InterviewDecision(
-                action=DecisionAction.FOLLOW_UP,
-                reason=f"Follow-up required: {reason_desc}",
-                target_day=current_day_num,
-                follow_up_required=True,
-                interview_complete=False,
-            )
+        # Check if we already asked a follow-up for the current question of the day.
+        # We count interviewer turns for the current curriculum day in history.
+        history = session.get_conversation_history()
+        interviewer_turns_this_day = sum(
+            1 for entry in history
+            if entry.role == "interviewer" and entry.curriculum_day == current_day_num
+        )
+        
+        # If interviewer turns on this day is greater than current_question_in_day,
+        # then we have already asked a follow-up for this planned question.
+        already_followed_up = interviewer_turns_this_day > session.state.current_question_in_day
+        
+        if not already_followed_up:
+            is_incomplete, reason_desc = _is_short_or_incomplete_answer(candidate_answer)
+            if is_incomplete:
+                return InterviewDecision(
+                    action=DecisionAction.FOLLOW_UP,
+                    reason=f"Follow-up required: {reason_desc}",
+                    target_day=current_day_num,
+                    follow_up_required=True,
+                    interview_complete=False,
+                )
 
     # Rule 4: Check if current day's planned question quota is reached
     questions_in_day = session.state.current_question_in_day

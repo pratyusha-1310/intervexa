@@ -639,3 +639,52 @@ Interview Planner
         |
         v
 Interview Session
+
+## B6B Integration Fix – Duplicate Question Prevention
+
+### Status
+
+Completed
+
+### Issue
+
+During frontend E2E testing, the backend returned the exact same interviewer question after a candidate response.
+
+### Root Cause
+
+Short/evasive responses could repeatedly trigger FOLLOW_UP for the same question. The LLM provider could also return an identical interviewer response without backend duplicate detection.
+
+### Resolution
+
+Implemented two safeguards:
+
+1. Follow-up limit:
+   - Maximum one follow-up per planned question.
+   - Subsequent turns progress toward the next curriculum question/topic.
+
+2. Duplicate response protection:
+   - Detects exact duplicate interviewer replies.
+   - Retries generation once.
+   - Uses a deterministic curriculum-based fallback if duplication persists.
+
+### Files Changed
+
+- `app/services/interview_decision_engine.py`
+- `app/services/interview_agent.py`
+- `tests/test_duplicate_prevention.py`
+
+### Verification
+
+163 / 163 tests passing.
+
+### Integration Requirement
+
+The frontend must be retested with a complete interview after pulling this backend fix.
+
+The interview must contain:
+
+- at least 8 genuine interviewer questions
+- at least 4 curriculum days
+- appropriate follow-ups
+- maintained conversation context
+- structured final feedback
