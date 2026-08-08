@@ -479,3 +479,125 @@ The frontend can replace the mock InterviewService and begin consuming the offic
 - End-to-End Frontend Integration
 - Production Deployment
 - Final Testing & Submission
+
+---
+
+# Frontend Status
+
+## ✅ Frontend F1 – Foundation & Candidate Setup
+
+Implemented:
+
+- INTERVEXA frontend application structure
+- Landing screen
+- Candidate selection/setup flow
+- Candidate data integration using `candidates.json`
+- Candidate profile display
+- Interview initialization flow
+- Dark-themed INTERVEXA UI
+- Responsive frontend layout
+
+---
+
+## ✅ Frontend F2 – Interview Experience
+
+Implemented:
+
+- Dynamic interview experience screen
+- Interview question/response interaction
+- Candidate response submission
+- Interview turn progression
+- Interview state management
+- `interviewService` abstraction
+- Mock interview service/data boundary
+- Frontend architecture prepared for backend integration
+
+The frontend keeps interview-service communication behind the `interviewService` boundary so that the mock implementation can later be replaced by the official backend API.
+
+---
+
+## ✅ Frontend F3 – Interview Completion & Feedback
+
+Implemented:
+
+- Three-turn interview flow
+- Interview completion state
+- Turn 3 completion handling
+- Interview input disabling after completion
+- Session completion banner
+- Feedback/report screen
+- Overall assessment display
+- Candidate performance summary
+- Demonstrated strengths section
+- Areas for technical growth section
+- Recommended cohort topics section
+- Return-to-Landing flow
+- Evaluate Another Candidate flow
+
+The frontend successfully transitions from the completed interview into the feedback/report experience.
+
+---
+
+## Current Frontend Status
+
+### Completed
+
+- ✅ F1 – Foundation & Candidate Setup
+- ✅ F2 – Interview Experience
+- ✅ F3 – Interview Completion & Feedback
+
+### Current Milestone
+
+➡️ **F4 – End-to-End Backend Integration**
+
+The frontend is ready to replace the current mock interview-service implementation with the official backend `POST /api/interview` endpoint.
+
+The existing `interviewService` boundary will be retained so that backend integration does not require rebuilding the UI architecture.
+
+### Frontend Integration Target
+
+The frontend will consume:
+
+```text
+POST /api/interview
+
+### Backend API Contract
+
+Start Interview request:
+
+```json
+{
+  "sessionId": "...",
+  "candidate": { ... }
+}
+```
+
+Continue Interview request:
+
+```json
+{
+  "sessionId": "...",
+  "message": "..."
+}
+```
+
+Expected response during interview:
+
+```json
+{
+  "reply": "...",
+  "done": false
+}
+```
+
+Expected response when the interview is complete:
+
+```json
+{
+  "reply": "...",
+  "done": true,
+  "feedback": null
+}
+```
+
+The frontend integration will preserve the existing F1–F3 UI and replace the mock interview-service behavior with calls to the official backend API.

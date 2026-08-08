@@ -525,3 +525,87 @@ Business logic remains encapsulated inside the Interview Controller and existing
 The endpoint conforms to the official hackathon Technical Specification while keeping interview planning, session management, decision making, AI interaction, and session storage as independent components.
 
 Final interview feedback is intentionally deferred to the Feedback Engine milestone and currently returns `null` when the interview completes.
+
+---
+
+# Frontend Milestone Record
+
+## Frontend F1–F3 Completion
+
+### F1 – Foundation & Candidate Setup
+
+Frontend work completed for:
+
+- INTERVEXA application structure
+- Landing screen
+- Candidate selection/setup
+- Candidate data integration
+- Candidate profile display
+- Initial interview flow
+- Core visual styling
+
+### F2 – Interview Experience
+
+Frontend work completed for:
+
+- Dynamic interview interface
+- Candidate response interaction
+- Interview turn progression
+- Interview state management
+- `interviewService` abstraction
+- Mock interview data/service boundary
+- Backend-ready service architecture
+
+### F3 – Interview Completion & Feedback
+
+Frontend work completed for:
+
+- Three-turn interview completion
+- Completion state handling
+- Disabled interview inputs after completion
+- Session completion banner
+- Feedback/report screen
+- Overall assessment
+- Candidate performance summary
+- Demonstrated strengths
+- Areas for technical growth
+- Recommended cohort topics
+- Return-to-landing flow
+- Evaluate-another-candidate flow
+
+### Frontend Milestone Status
+
+**F1–F3 completed.**
+
+The frontend is now ready for:
+
+➡️ **F4 – End-to-End Backend Integration**
+
+The next implementation will replace the mock interview-service behavior with the official backend:
+
+```text
+POST /api/interview
+```
+
+while preserving the rest exactly as you have it.
+
+Then press **Ctrl + S**.
+
+### Now let's verify the Git changes
+
+Go back to your PowerShell in the `intervexa` repository and run:
+
+```powershell
+git status
+```
+
+**Do not run `git add` yet.**
+
+We want to see only:
+
+```text
+modified: PROJECT_CONTEXT.md
+modified: PROMPTS.md
+```
+
+If that's what you get, we're good to commit the documentation update.
