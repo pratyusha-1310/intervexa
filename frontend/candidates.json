@@ -1,0 +1,163 @@
+{
+  "candidates": [
+    {
+      "member": {
+        "id": "cand-01",
+        "name": "Alex Chen",
+        "jobRole": "AI Systems Engineer",
+        "yearsExperience": 4,
+        "education": "M.S. Computer Science",
+        "status": "Active"
+      },
+      "missions": [
+        {
+          "day": 1,
+          "title": "Prompt Engineering & Tokenization",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 2,
+          "title": "Vector Embeddings & Cosine Similarity",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 3,
+          "title": "Retrieval-Augmented Generation (RAG)",
+          "passed": true,
+          "attempts": 2
+        },
+        {
+          "day": 4,
+          "title": "Hybrid Search & Re-Ranking",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 5,
+          "title": "Agentic AI Loops & Tool Calling",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 6,
+          "title": "Model Context Protocol (MCP)",
+          "passed": false,
+          "attempts": 3
+        },
+        {
+          "day": 7,
+          "title": "Production vLLM Deployment",
+          "passed": false,
+          "attempts": 0
+        }
+      ],
+      "signals": {
+        "commitDays": 28,
+        "missionsCompleted": 25,
+        "missionsFirstTry": 21
+      }
+    },
+    {
+      "member": {
+        "id": "cand-02",
+        "name": "Maya Lin",
+        "jobRole": "Senior ML Infrastructure Engineer",
+        "yearsExperience": 6,
+        "education": "B.S. Software Engineering",
+        "status": "Active"
+      },
+      "missions": [
+        {
+          "day": 1,
+          "title": "Prompt Engineering & Tokenization",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 2,
+          "title": "Vector Embeddings & Cosine Similarity",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 3,
+          "title": "Retrieval-Augmented Generation (RAG)",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 4,
+          "title": "Model Context Protocol (MCP)",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 5,
+          "title": "Dockerized Model Inference & Scaling",
+          "passed": true,
+          "attempts": 2
+        },
+        {
+          "day": 6,
+          "title": "LLM Guardrails & Hallucination Mitigation",
+          "passed": true,
+          "attempts": 1
+        }
+      ],
+      "signals": {
+        "commitDays": 31,
+        "missionsCompleted": 29,
+        "missionsFirstTry": 26
+      }
+    },
+    {
+      "member": {
+        "id": "cand-03",
+        "name": "Marcus Vance",
+        "jobRole": "Full-Stack AI Developer",
+        "yearsExperience": 2,
+        "education": "B.S. Computer Science",
+        "status": "Completed"
+      },
+      "missions": [
+        {
+          "day": 1,
+          "title": "Prompt Engineering & Tokenization",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 2,
+          "title": "Vector Embeddings & Cosine Similarity",
+          "passed": true,
+          "attempts": 2
+        },
+        {
+          "day": 3,
+          "title": "Retrieval-Augmented Generation (RAG)",
+          "passed": false,
+          "attempts": 2
+        },
+        {
+          "day": 4,
+          "title": "Fine-Tuning & Quantization",
+          "passed": true,
+          "attempts": 1
+        },
+        {
+          "day": 5,
+          "title": "AI Agent Evaluation",
+          "passed": false,
+          "attempts": 0
+        }
+      ],
+      "signals": {
+        "commitDays": 22,
+        "missionsCompleted": 18,
+        "missionsFirstTry": 14
+      }
+    }
+  ]
+}
