@@ -522,3 +522,80 @@ The Interview Agent remains provider-agnostic and communicates only through the 
 ### Test Status
 
 151 / 151 tests passing
+
+## ✅ B6B – Structured Feedback Engine
+
+### Status
+
+Completed
+
+### Objective
+
+Implemented the final Interview Feedback Engine and integrated it into the official interview API.
+
+### Implemented
+
+- InterviewFeedback schema
+- Feedback generation service
+- Structured JSON feedback
+- Provider-agnostic generation
+- Controller integration
+- Robust fallback responses
+- JSON sanitisation
+- Updated API response
+- Unit tests
+
+### API Completion Response
+
+The backend now returns:
+
+```json
+{
+  "reply": "...",
+  "done": true,
+  "feedback": {
+    "summary": "...",
+    "strengths": [],
+    "gaps": [],
+    "next": [],
+    "technical_understanding": "...",
+    "reasoning": "...",
+    "communication": "...",
+    "overall_assessment": "..."
+  }
+}
+```
+
+### Current Backend Architecture
+
+```
+Candidate Loader
+        │
+Curriculum Loader
+        │
+Interview Planner
+        │
+Interview Session
+        │
+Decision Engine
+        │
+Gemini Provider
+        │
+Interview Agent
+        │
+Feedback Engine
+        │
+Session Registry
+        │
+Interview Controller
+        │
+POST /api/interview
+```
+
+### Test Status
+
+All automated tests passing.
+
+Backend feature development is complete.
+
+Remaining work focuses on frontend integration, end-to-end validation, deployment, and final submission.

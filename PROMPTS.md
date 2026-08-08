@@ -579,3 +579,58 @@ Implemented:
 Gemini is now the primary production LLM provider.
 
 The provider architecture remains modular, allowing future providers (OpenAI, Anthropic, Groq, OpenRouter, etc.) to be added without modifying the Interview Agent.
+
+## Prompt 010 – Structured Feedback Engine
+
+### Goal
+
+Implement the final structured interview feedback engine for INTERVEXA.
+
+The feedback should be generated when an interview concludes and returned through the official `POST /api/interview` endpoint.
+
+The implementation should remain provider-agnostic and reuse the existing LLM abstraction.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated a structured Interview Feedback Engine using the existing provider abstraction.
+
+Implemented:
+
+- InterviewFeedback schema
+- Feedback generation service
+- Controller integration
+- Robust fallback handling
+- JSON extraction & sanitisation
+- Unit tests
+
+### Result
+
+Generated:
+
+- `app/schemas/interview_feedback.py`
+- `app/services/interview_feedback.py`
+
+Updated:
+
+- `app/services/interview_controller.py`
+- `app/schemas/interview_api.py`
+- `app/services/interview_agent.py`
+
+Implemented:
+
+- Structured interview feedback
+- Provider-agnostic feedback generation
+- Safe fallback responses
+- JSON sanitisation
+- API integration
+- Unit tests
+
+### Decision
+
+Feedback generation remains completely independent from the Interview Agent.
+
+The Interview Controller orchestrates feedback generation only after interview completion, preserving clean separation of responsibilities while satisfying the hackathon requirement for structured interview evaluation.

@@ -62,4 +62,12 @@ class InterviewApiResponse(BaseModel):
         """Serializes response according to official API spec."""
         if not self.done:
             return {"reply": self.reply, "done": False}
-        return {"reply": self.reply, "done": True, "feedback": None}
+        
+        feedback_data = None
+        if self.feedback is not None:
+            if hasattr(self.feedback, "model_dump"):
+                feedback_data = self.feedback.model_dump()
+            else:
+                feedback_data = self.feedback
+        
+        return {"reply": self.reply, "done": True, "feedback": feedback_data}

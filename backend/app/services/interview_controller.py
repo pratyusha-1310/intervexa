@@ -131,10 +131,12 @@ def _handle_continue_interview(
 
     # Check if already complete
     if session.is_complete():
+        from app.services.interview_feedback import generate_feedback
+        feedback_obj = generate_feedback(plan, session, provider=provider)
         response = InterviewApiResponse(
             reply="The interview session has already been completed.",
             done=True,
-            feedback=None,
+            feedback=feedback_obj,
         )
         return response.to_dict()
 
@@ -166,9 +168,14 @@ def _handle_continue_interview(
 
     is_done = decision.interview_complete or session.is_complete()
 
+    feedback_obj = None
+    if is_done:
+        from app.services.interview_feedback import generate_feedback
+        feedback_obj = generate_feedback(plan, session, provider=provider)
+
     response = InterviewApiResponse(
         reply=agent_response.reply,
         done=is_done,
-        feedback=None if is_done else None,
+        feedback=feedback_obj,
     )
     return response.to_dict()

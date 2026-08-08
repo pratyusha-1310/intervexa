@@ -98,6 +98,19 @@ class MockLLMProvider(BaseLLMProvider):
             if key.lower() in last_user_msg.lower():
                 return resp
 
+        # Check if this is a feedback generation request
+        if "structured assessment" in system_prompt.lower() or "transcript:" in last_user_msg.lower():
+            return json.dumps({
+                "summary": "Mock summary of candidate's technical capability.",
+                "strengths": ["Mock strength 1", "Mock strength 2"],
+                "gaps": ["Mock gap 1"],
+                "next": ["Mock next step 1"],
+                "technical_understanding": "Mock technical understanding evaluation.",
+                "reasoning": "Mock trade-off reasoning evaluation.",
+                "communication": "Mock communication clarity evaluation.",
+                "overall_assessment": "Pass"
+            })
+
         if "ACTION: END_INTERVIEW" in last_user_msg:
             return (
                 "Thank you very much for taking the time to complete this technical interview. "

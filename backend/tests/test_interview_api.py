@@ -171,4 +171,6 @@ class TestInterviewApiRouterIntegration:
 
         assert final_resp is not None
         assert final_resp["done"] is True
-        assert final_resp["feedback"] is None
+        assert final_resp["feedback"] is not None
+        assert "summary" in final_resp["feedback"]
+        assert "overall_assessment" in final_resp["feedback"]
