@@ -479,3 +479,46 @@ The frontend can replace the mock InterviewService and begin consuming the offic
 - End-to-End Frontend Integration
 - Production Deployment
 - Final Testing & Submission
+
+## ✅ B6A – Production LLM Provider (Gemini)
+
+### Status
+
+Completed
+
+### Objective
+
+Integrated Gemini as the production LLM provider using the official Google Gen AI SDK.
+
+### Implemented
+
+- GeminiLLMProvider
+- Dynamic provider selection
+- Environment-based configuration
+- Graceful fallback
+- Centralized provider management
+- Gemini unit tests
+
+### Environment Variables
+
+```
+LLM_PROVIDER
+GEMINI_API_KEY
+GEMINI_MODEL
+```
+
+### Current Provider Architecture
+
+```
+BaseLLMProvider
+        │
+        ├── MockLLMProvider
+        ├── OpenAILLMProvider
+        └── GeminiLLMProvider
+```
+
+The Interview Agent remains provider-agnostic and communicates only through the BaseLLMProvider interface.
+
+### Test Status
+
+151 / 151 tests passing

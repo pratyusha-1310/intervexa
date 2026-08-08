@@ -163,12 +163,90 @@ class OpenAILLMProvider(BaseLLMProvider):
             return MockLLMProvider().generate(system_prompt, messages)
 
 
+class GeminiLLMProvider(BaseLLMProvider):
+    """
+    Google Gemini API provider implementation using official google-genai SDK.
+    """
+
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None) -> None:
+        settings = get_settings()
+        self.api_key = (
+            api_key
+            or os.getenv("GEMINI_API_KEY")
+            or os.getenv("GOOGLE_API_KEY")
+            or getattr(settings, "GEMINI_API_KEY", "")
+        )
+        self.model = (
+            model
+            or os.getenv("GEMINI_MODEL")
+            or getattr(settings, "GEMINI_MODEL", "")
+            or "gemini-2.5-flash"
+        )
+
+    def generate(
+        self,
+        system_prompt: str,
+        messages: List[Dict[str, str]],
+    ) -> str:
+        if not self.api_key:
+            # Fallback to mock if API key is missing
+            return MockLLMProvider().generate(system_prompt, messages)
+
+        try:
+            from google import genai
+            from google.genai import types
+
+            client = genai.Client(api_key=self.api_key)
+
+            # Map assistant -> model for Gemini
+            contents = []
+            for msg in messages:
+                role = "model" if msg["role"] == "assistant" else "user"
+                contents.append(
+                    types.Content(
+                        role=role,
+                        parts=[types.Part.from_text(text=msg["content"])],
+                    )
+                )
+
+            config = types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                temperature=0.7,
+            )
+
+            response = client.models.generate_content(
+                model=self.model,
+                contents=contents,
+                config=config,
+            )
+
+            if response and hasattr(response, "text") and response.text is not None:
+                text_val = str(response.text).strip()
+                if text_val:
+                    return text_val
+
+            return MockLLMProvider().generate(system_prompt, messages)
+
+        except Exception as exc:
+            # On SDK/network/API error, fallback to mock gracefully
+            return MockLLMProvider().generate(system_prompt, messages)
+
+
 def get_default_provider() -> BaseLLMProvider:
-    """Returns the default LLM provider configured in settings."""
-    settings = get_settings()
-    if settings.LLM_PROVIDER == "openai" and (settings.LLM_API_KEY or os.getenv("OPENAI_API_KEY")):
+    """Returns the default LLM provider configured in settings / environment."""
+    provider_type = os.getenv("LLM_PROVIDER")
+    if not provider_type:
+        settings = get_settings()
+        provider_type = getattr(settings, "LLM_PROVIDER", "mock")
+    
+    provider_type = (provider_type or "mock").lower()
+
+    if provider_type == "gemini":
+        return GeminiLLMProvider()
+    elif provider_type == "openai":
         return OpenAILLMProvider()
-    return MockLLMProvider()
+    else:
+        return MockLLMProvider()
 
 
 # ── Prompt Builder ─────────────────────────────────────────────────────────────

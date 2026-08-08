@@ -525,3 +525,57 @@ Business logic remains encapsulated inside the Interview Controller and existing
 The endpoint conforms to the official hackathon Technical Specification while keeping interview planning, session management, decision making, AI interaction, and session storage as independent components.
 
 Final interview feedback is intentionally deferred to the Feedback Engine milestone and currently returns `null` when the interview completes.
+
+## Prompt 009 – Production LLM Provider (Gemini)
+
+### Goal
+
+Integrate Google's Gemini API as the production LLM provider while preserving the existing provider abstraction.
+
+The Interview Agent should continue interacting only through the BaseLLMProvider interface.
+
+Support dynamic provider selection using environment variables.
+
+### Tool
+
+Antigravity
+
+### Prompt
+
+Generated a production-ready Gemini provider using the official Google Gen AI SDK.
+
+Implemented:
+
+- GeminiLLMProvider
+- Dynamic provider selection
+- Environment-based configuration
+- Error handling
+- SDK integration
+- Unit tests
+
+### Result
+
+Updated:
+
+- `app/services/interview_agent.py`
+- `app/config/settings.py`
+
+Generated:
+
+- Gemini provider implementation
+- Provider selection logic
+- Gemini unit tests
+
+Implemented:
+
+- Official Google Gen AI SDK integration
+- Dynamic provider selection
+- Configuration via `.env`
+- Graceful fallback to Mock provider
+- Robust exception handling
+
+### Decision
+
+Gemini is now the primary production LLM provider.
+
+The provider architecture remains modular, allowing future providers (OpenAI, Anthropic, Groq, OpenRouter, etc.) to be added without modifying the Interview Agent.

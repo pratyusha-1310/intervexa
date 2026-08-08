@@ -24,7 +24,9 @@ class Settings(BaseSettings):
     # ── LLM Settings ───────────────────────────────────────────────────────────
     LLM_API_KEY: str = ""
     LLM_MODEL: str = "gpt-4o-mini"
-    LLM_PROVIDER: str = "mock"  # mock | openai | custom
+    LLM_PROVIDER: str = "mock"  # mock | openai | gemini | custom
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-2.5-flash"
 
     model_config = SettingsConfigDict(
         env_file=".env",
